@@ -59,6 +59,8 @@ const Login = () => {
       console.log(response.data.userId);
       ///login(response.data.userId);
       localStorage.setItem("userId", response.data.userId); // Store the userId in localStorage
+      //localStorage.setItem("reload", True);
+      
       navigateTo("/tasks");
     } catch (error) {
       console.log(error);
@@ -78,6 +80,7 @@ const Login = () => {
             type="text"
             value={username}
             onChange={(e) => {
+              setResponseMessage("");
               setUsername(e.target.value);
               setValues({ ...values, username: e.target.value });
             }}
@@ -90,6 +93,7 @@ const Login = () => {
             type="password"
             value={password}
             onChange={(e) => {
+              setResponseMessage("");
               setPassword(e.target.value);
               setValues({ ...values, password: e.target.value });
             }}
@@ -102,7 +106,9 @@ const Login = () => {
               className="form-control"
               type="password"
               value={password2}
-              onChange={(e) => setPassword2(e.target.value)}
+              onChange={(e) => {
+                setResponseMessage("");
+                setPassword2(e.target.value)}}
             />
           </div>
         ) : null}

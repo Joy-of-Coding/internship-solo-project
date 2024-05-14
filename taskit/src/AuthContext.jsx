@@ -1,28 +1,60 @@
-// import React, { createContext, useState } from 'react';
+// // AuthContext.js
+// import React, { createContext, useState, useContext, useEffect } from 'react';
 
-// export const AuthContext = createContext();
+// const AuthContext = createContext();
 
 // export const AuthProvider = ({ children }) => {
-//   //const [user, setUser] = useState(null);
-//   const [user, setUser] = useState({ isLoggedIn: false, userId: null });
+//   const [isLoggedIn, setIsLoggedIn] = useState(false);
+//   const [userId, setUserId] = useState(null);
+
+//   useEffect(() => {
+//     const storedUserId = localStorage.getItem('userId');
+//     if (storedUserId) {
+//       setIsLoggedIn(true);
+//       setUserId(storedUserId);
+//     } else {
+//       setIsLoggedIn(false);
+//       setUserId(null);
+//     }
+//   }, []);
+
+//   // Add useEffect to listen for changes in localStorage
+//   useEffect(() => {
+//     const handleStorageChange = () => {
+//       const storedUserId = localStorage.getItem('userId');
+//       if (storedUserId) {
+//         setIsLoggedIn(true);
+//         setUserId(storedUserId);
+//       } else {
+//         setIsLoggedIn(false);
+//         setUserId(null);
+//       }
+//     };
+
+//     window.addEventListener('storage', handleStorageChange);
+
+//     return () => {
+//       window.removeEventListener('storage', handleStorageChange);
+//     };
+//   }, []);
 
 //   const login = (userId) => {
-//     // Perform login logic here
-//     // Set user object with userId
-//     setUser({ isLoggedIn: true, userId });
+//     localStorage.setItem('userId', userId);
+//     setIsLoggedIn(true);
+//     setUserId(userId);
 //   };
 
 //   const logout = () => {
-//     // Perform logout logic here
-//     // Set user object to null
-//     setUser(null);
+//     localStorage.removeItem('userId');
+//     setIsLoggedIn(false);
+//     setUserId(null);
 //   };
 
 //   return (
-//     <AuthContext.Provider value={{ user, login, logout }}>
+//     <AuthContext.Provider value={{ isLoggedIn, userId, login, logout }}>
 //       {children}
 //     </AuthContext.Provider>
 //   );
 // };
 
-
+// export const useAuth = () => useContext(AuthContext);

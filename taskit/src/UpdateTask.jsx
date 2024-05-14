@@ -1,12 +1,19 @@
 import react, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 const UpdateTask = () => {
   //isLoggedIn ? 
+  const navigateTo = useNavigate();
   const storedUserId = localStorage.getItem('userId');
-  {!storedUserId ? navigateTo('/') : null}
+    
+    useEffect(() => {
+      // Check if storedUserId is falsy (null, undefined, empty string, etc.)
+      if (!storedUserId) {
+        navigateTo('/');
+      }
+    }, [storedUserId, navigateTo]);
 
   let { id } = useParams();
 

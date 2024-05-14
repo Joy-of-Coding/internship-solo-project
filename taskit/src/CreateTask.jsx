@@ -1,50 +1,51 @@
 import react, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 ///import { AuthContext } from './AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 
 const CreateTask = () => {
+  
   const navigateTo = useNavigate();
-
   const storedUserId = localStorage.getItem('userId');
-  {!storedUserId ? navigateTo('/') : null}
-  
-  
-  console.log("User id stored in session: " + storedUserId);
-  
-  
+    
+    useEffect(() => {
+      // Check if storedUserId is falsy (null, undefined, empty string, etc.)
+      if (!storedUserId) {
+        navigateTo('/');
+      }
+    }, [storedUserId, navigateTo]);
+
   const [values, setValues] = useState({
     title: "",
     description: "",
     duedate: "",
     userid: storedUserId,
   });
-  
-const [responseMessage, setResponseMessage] = useState("");
-const handleSubmit = async (e) => {
-  e.preventDefault();
 
-  if (!values.title || !values.description || !values.duedate) {
-    setResponseMessage("Please fill in all the fields.");
-    return; // Exit early if any field is empty
-  }
+  const [responseMessage, setResponseMessage] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await axios.post("http://localhost:3000/create", values);
-    setResponseMessage(response.data.message); // Assuming the response contains a "message" field
-    
-  } catch (error) {
-    console.log(error);
-    setResponseMessage("An error occurred. Please try again.");
-  }
-};
+    if (!values.title || !values.description || !values.duedate) {
+      setResponseMessage("Please fill in all the fields.");
+      return; // Exit early if any field is empty
+    }
+
+    try {
+      const response = await axios.post("http://localhost:3000/create", values);
+      setResponseMessage(response.data.message); // Assuming the response contains a "message" field
+    } catch (error) {
+      console.log(error);
+      setResponseMessage("An error occurred. Please try again.");
+    }
+  };
 
   return (
     <div className="d-flex align-items-center flex-column mt-3">
       <h1>Add a Task</h1>
-      
-      <h3 >{responseMessage}</h3>
+
+      <h3>{responseMessage}</h3>
       <form className=" w-50" onSubmit={handleSubmit}>
         <div className="mb-3 mt-3">
           <label className="form-label">Task Name</label>

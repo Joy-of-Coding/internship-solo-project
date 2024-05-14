@@ -3,10 +3,10 @@ import CreateTask from './CreateTask';
 import UpdateTask from './UpdateTask';
 import Tasks from './tasks';
 import Login from './login';
-
+import Nav from './Nav';
 
 const App = () => {
-    
+  
   return (
     
       <Routes>
