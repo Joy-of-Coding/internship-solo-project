@@ -5,13 +5,16 @@ import { useParams } from "react-router-dom";
 
 const UpdateTask = () => {
   //isLoggedIn ? 
+  const storedUserId = localStorage.getItem('userId');
+  {!storedUserId ? navigateTo('/') : null}
+
   let { id } = useParams();
 
   const [values, setValues] = useState({
     title: "",
     description: "",
     duedate: "",
-    userid: 1,
+    userid: storedUserId,
   });
 
   useEffect(() => {

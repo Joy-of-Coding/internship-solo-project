@@ -5,16 +5,16 @@ import "./index.css";
 //import { store, useGlobalState } from "state-pool";
 import { BrowserRouter } from "react-router-dom";
 import Nav from "./Nav";
-import { AuthProvider } from "./AuthContext";
+//import { AuthProvider } from "./AuthContext";
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
+    
       <BrowserRouter>
         <Nav />
         <App />
       </BrowserRouter>
-    </AuthProvider>
+    
   </React.StrictMode>
 );

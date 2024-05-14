@@ -105,6 +105,28 @@ app.post("/create", (req, res) => {
     });
 });
 
+app.post("/createUser", (req, res) => {
+  const { username, password } = req.body;
+  
+  // Define the SQL query to insert data into the database
+  const sql =
+    "INSERT INTO users (username, password) VALUES ($1, $2)";
+  const values = [username, password];
+  
+  // Execute the SQL query
+  client
+    .query(sql, values)
+    .then((result) => {
+      console.log("Data inserted successfully:", result.rows);
+      res.status(200).json({ message: "Data inserted successfully" });
+      //document.getElementById("response").innerText = JSON.stringify(res.data);
+    })
+    .catch((error) => {
+      console.error("Error inserting data:", error);
+      res.status(500).json({ error: "Failed to insert data" });
+    });
+});
+
 // Update a record
 app.put("/update/:id", (req, res) => {
   const { title, description, duedate, userid } = req.body;

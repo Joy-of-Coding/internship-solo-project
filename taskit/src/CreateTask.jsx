@@ -1,36 +1,24 @@
 import react, { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { AuthContext } from './AuthContext';
+///import { AuthContext } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 
 const CreateTask = () => {
-  const { user } = useContext(AuthContext);
-  const isLoggedIn = user && user.isLoggedIn;
-  const myId = user ? user.userId : null;
-  
-  const [userId, setUserId] = useState(null);
-
   const navigateTo = useNavigate();
 
-  //{!userId ? navigateTo('/') : null}
-  console.log("User id stored in session: " + myId);
+  const storedUserId = localStorage.getItem('userId');
+  {!storedUserId ? navigateTo('/') : null}
   
-  {!myId ? navigateTo('/') : null}
   
-  useEffect(() => {
-    if (!myId) {
-      navigateTo('/');
-    } else {
-      setUserId(myId); // Update userId when myId changes
-    }
-  }, [myId, navigateTo]);
-
+  console.log("User id stored in session: " + storedUserId);
+  
+  
   const [values, setValues] = useState({
     title: "",
     description: "",
     duedate: "",
-    userid: myId,
+    userid: storedUserId,
   });
   
 const [responseMessage, setResponseMessage] = useState("");
