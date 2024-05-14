@@ -1,15 +1,36 @@
-import react, { useState } from "react";
+import react, { useState, useContext, useEffect } from "react";
 import axios from "axios";
+import { AuthContext } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 
 const CreateTask = () => {
+  const { user } = useContext(AuthContext);
+  const isLoggedIn = user && user.isLoggedIn;
+  const myId = user ? user.userId : null;
   
+  const [userId, setUserId] = useState(null);
+
+  const navigateTo = useNavigate();
+
+  //{!userId ? navigateTo('/') : null}
+  console.log("User id stored in session: " + myId);
   
+  {!myId ? navigateTo('/') : null}
+  
+  useEffect(() => {
+    if (!myId) {
+      navigateTo('/');
+    } else {
+      setUserId(myId); // Update userId when myId changes
+    }
+  }, [myId, navigateTo]);
+
   const [values, setValues] = useState({
     title: "",
     description: "",
     duedate: "",
-    userid: 1,
+    userid: myId,
   });
   
 const [responseMessage, setResponseMessage] = useState("");
@@ -34,6 +55,7 @@ const handleSubmit = async (e) => {
   return (
     <div className="d-flex align-items-center flex-column mt-3">
       <h1>Add a Task</h1>
+      
       <h3 >{responseMessage}</h3>
       <form className=" w-50" onSubmit={handleSubmit}>
         <div className="mb-3 mt-3">

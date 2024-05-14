@@ -1,3 +1,4 @@
+
 import react, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom";
@@ -7,25 +8,54 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
 const Tasks = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-  //const { login } = useContext(AuthProvider);
+  const { user } = useContext(AuthContext);
+  const isLoggedIn = user && user.isLoggedIn;
+  const myId = user ? user.userId : null;
+
+  const [deletedTaskId, setDeletedTaskId] = useState(null);
+  const [userId, setUserId] = useState(null);
+
   const navigateTo = useNavigate();
-  //const { isLoggedIn } = useContext(AuthContext);
-  //avigateTo('/');
-  {!isLoggedIn ? navigateTo('/') : null}
+
+  {!userId ? navigateTo('/') : null}
+
+  console.log("User id stored in session:" + userId);
+
+  useEffect(() => {
+    if (deletedTaskId) {
+      console.log("In deleted task " + userId);
+      navigateTo('/tasks');
+    }
+  }, [deletedTaskId, navigateTo]);
   
+  useEffect(() => {
+    // Check if userId exists in localStorage
+    const storedUserId = localStorage.getItem('userId');
+
+    if (storedUserId) {
+      // If userId exists, set it in the component state
+      setUserId(storedUserId);
+    } else {
+      // If userId doesn't exist, handle the scenario accordingly
+      // For example, redirect to the login page
+      // history.push('/login'); // If using React Router, navigate to the login page
+    }
+  }, []);
+
   const [task, setTasks] = useState([]);
-  
+  console.log("User id stored in session:" + userId);
    
-  const handleDelete = (id) => {
+  const handleDelete = (taskId) => {
     const result = window.confirm("Are you sure you want to proceed?");
     
     if (result) {
       axios
-      .delete(`http://localhost:3000/delete/${id}`)
+      .delete(`http://localhost:3000/delete/${taskId}`)
       .then((response) => {
-        console.log(response.data);
-        window.location.reload(); // Reload the page
+        console.log("item deleted");
+        //navigateTo(/tasks); // Reload the page
+        setDeletedTaskId(taskId);
+        //navigateTo('/tasks');
         // Handle the response data here
         //alert("res " + response.data);
       })
@@ -39,11 +69,11 @@ const Tasks = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/tasks")
+      .get(`http://localhost:3000/tasks/${userId}`)
       .then((res) => setTasks(res.data))
       .catch((err) => console.log(err));
-  }, []);
-  //setTasks([1,2,3]);
+  }, [userId , deletedTaskId]);
+  
 
 //*********************  SORTING */
 

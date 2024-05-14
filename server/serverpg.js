@@ -1,12 +1,13 @@
 //express is the language of node.js
 const express = require("express");
+const session = require("express-session");
 //import express from "express";
 const mysql = require("mysql");
 //import mysql from "mysql";
 const cors = require("cors");
 //import cors from "cors";
 const bodyParser = require("body-parser");
-
+//import { AuthContext } from "/taskit/src/AuthContext.jsx";
 
 const { Client } = require("pg");
 
@@ -22,6 +23,12 @@ client.connect();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use(session({
+  secret: '123456789', // Replace with a secure secret key
+  resave: false,
+  saveUninitialized: true,
+}));
 
 app.get("/getTask/:id", (req, res) => {
   const id = req.params.id;
@@ -56,6 +63,7 @@ app.post("/login", (req, res) => {
       
       if (data.rows.length > 0) {
         const userId = data.rows[0].id;
+                
         return res.json({ userId });
       } else {
         return res.status(404).json({ error: "User not found" });
@@ -63,8 +71,9 @@ app.post("/login", (req, res) => {
     });
   });
 
-app.get("/tasks", (req, res) => {
-  const sql = "select * from tasks";
+app.get("/tasks/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "select * from tasks where userid = " + id;
   client.query(sql, (err, data) => {
     if (err) {
       return console.log(err);
@@ -76,12 +85,12 @@ app.get("/tasks", (req, res) => {
 
 app.post("/create", (req, res) => {
   const { title, description, duedate, userid } = req.body;
-
+  
   // Define the SQL query to insert data into the database
   const sql =
     "INSERT INTO tasks (title, description, duedate, userid) VALUES ($1, $2, $3, $4)";
   const values = [title, description, duedate, userid];
-
+  
   // Execute the SQL query
   client
     .query(sql, values)
@@ -125,8 +134,8 @@ app.put("/update/:id", (req, res) => {
 });
 
 app.delete("/delete/:id", (req, res) => {
-  const id = req.params.id;
-  const sql = "DELETE FROM tasks WHERE id = " + id;
+  const taskId = req.params.id;
+  const sql = "DELETE FROM tasks WHERE id = " + taskId;
   //console.log(sql);
   client.query(sql, (err, result) => {
     if (err) {
@@ -134,7 +143,7 @@ app.delete("/delete/:id", (req, res) => {
       return res.status(500).json({ error: "Internal server error" });
     }
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Task not found" });
     }
     res.json({ message: "Task deleted successfully" });
   });

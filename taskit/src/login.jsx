@@ -4,14 +4,14 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { store } from 'state-pool';
-import { AuthContext, AuthProvider } from './AuthContext';
+import { AuthContext } from './AuthContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [responseMessage, setResponseMessage] = useState("");
   const navigateTo = useNavigate();
-  const { isLoggedIn, login } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,8 +30,9 @@ const Login = () => {
           );
       setResponseMessage(response.data.message); // Assuming the response contains a "message" field
       //window.location.reload(); // Reload the page
-      console.log(response.data);
-      login(true);
+      console.log(response.data.userId);
+      login(response.data.userId);
+      localStorage.setItem('userId', response.data.userId); // Store the userId in localStorage
       navigateTo('/tasks');
     } catch (error) {
       console.log(error);
@@ -40,18 +41,19 @@ const Login = () => {
   };
 
   return (
-    <div className='d-flex justify-content-center py-2 shadow-sm fs-2 fw-bold '>
+    <div className='d-flex align-items-center flex-column mt-3'>
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <h3 >{responseMessage}</h3>
+      <form className="w-50" onSubmit={handleLogin}>
         <div>
           <label>Username:</label>
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input className="form-control" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
         <div>
           <label>Password:</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input className="form-control" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
-        <button type="submit">Login</button>
+        <button className="btn btn-primary" type="submit">Login</button>
       </form>
     </div>
   );
